@@ -11,7 +11,7 @@ const FILE = path.join(app.getPath('userData'), 'cue-data.json');
 const MAX_AI_RULES_CHARS = 2000;
 
 const DEFAULTS = {
-  provider: 'openai',
+  provider: 'gemini',
   sttProvider: 'auto',
   localWhisper: {
     modelId: 'base.en',
@@ -21,7 +21,7 @@ const DEFAULTS = {
   smart: false,
   baseUrl: '',
   minimaxRegion: 'global_en',
-  apiKeys: { openai: '', anthropic: '', gemini: '', deepgram: '', custom: '', ollama: '', groq: '', minimax: '' , azure: '' },
+  apiKeys: { openai: '', anthropic: '', gemini: process.env.GEMINI_API_KEY || '', deepgram: '', custom: '', ollama: '', groq: '', minimax: '' , azure: '' },
   azureEndpoint: '',
   // Tab 2: Profile
   resumeText: '',
@@ -80,6 +80,14 @@ function load() {
   try { data = deepMerge(DEFAULTS, JSON.parse(fs.readFileSync(FILE, 'utf8'))); }
   catch { data = deepMerge(DEFAULTS, {}); }
 
+  // Always apply the env-supplied Gemini key so a stale saved file cannot
+  // override the .env configuration. If a key is present, also lock the
+  // provider to gemini so the app never silently falls back to another provider.
+  const envGeminiKey = process.env.GEMINI_API_KEY;
+  if (envGeminiKey) {
+    data.apiKeys = { ...data.apiKeys, gemini: envGeminiKey };
+    data.provider = 'gemini';
+  }
 
   return data;
 }
