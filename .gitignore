@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out/
+.cache/
+
+# Native binaries
+native/systemaudio
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# User data / secrets — NEVER commit these
+cue-data.json        # contains API keys + personal interview prep
+*.env
+.env*
+
+# Test artefacts
+test-stt-connection.js
+test-resume.js
+
+# Kiro IDE internals — hide spec/steering from public repo
+.kiro/
+
+# Electron dist cache
+node_modules/electron/dist/electron.exe.bak
